@@ -381,28 +381,61 @@
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+        // ==============================================================
+        // 1. CONFIGURATION SECTION (ส่วนตั้งค่า)
+        // ==============================================================
+        
+        let firebaseConfig;
+        let appId = 'fight-together-project-001'; // ตั้งชื่อ App ID ที่นี่ (ใช้อะไรก็ได้ภาษาอังกฤษ)
+
+        // ตรวจสอบสภาพแวดล้อม (Canvas Preview vs GitHub/External)
+        if (typeof __firebase_config !== 'undefined') {
+            // กรณีรันใน Preview นี้ (ไม่ต้องแก้อะไร)
+            firebaseConfig = JSON.parse(__firebase_config);
+            appId = typeof __app_id !== 'undefined' ? __app_id : appId;
+        } else {
+            // --- ส่วนที่ต้องแก้ไขเมื่อนำไปใช้จริง (GitHub/Hosting) ---
+            // นำ Config จาก Firebase Console -> Project Settings มาใส่ที่นี่
+            firebaseConfig = {
+  apiKey: "AIzaSyDJ8npvDgfze2iJPaQRigxYv3FYRtIKCTE",
+  authDomain: "fighttogetherproject-a24ed.firebaseapp.com",
+  projectId: "fighttogetherproject-a24ed",
+  storageBucket: "fighttogetherproject-a24ed.firebasestorage.app",
+  messagingSenderId: "798363442306",
+  appId: "1:798363442306:web:24bd097ebbc4340046e89b",
+  measurementId: "G-8FB33FD426"
+};
+            console.log("Running in External Mode: Using manual config");
+        }
+
         // Initialize Firebase
-        const firebaseConfig = JSON.parse(__firebase_config);
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 
-        // Admin Password
+        // Admin Password (UI Only - Not a real security measure)
         const ADMIN_PASS = 'ftadmin';
+        
         let currentUser = null;
         let currentPopupData = null;
 
         // --- Auth Logic ---
         const initAuth = async () => {
             try {
+                // ถ้าอยู่ใน Preview และมี Token พิเศษ ให้ใช้ Token
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                     await signInWithCustomToken(auth, __initial_auth_token);
                 } else {
+                    // ถ้าอยู่ข้างนอก (GitHub) ให้ใช้ Anonymous Login
+                    // (ต้องเปิดใช้งาน Anonymous Auth ใน Firebase Console ก่อน)
                     await signInAnonymously(auth);
                 }
             } catch (error) {
                 console.error("Auth Error:", error);
+                // ถ้า Error เกี่ยวกับ Config ให้แจ้งเตือน
+                if (error.code === 'auth/invalid-api-key' || error.message.includes('apiKey')) {
+                    alert("เกิดข้อผิดพลาด: ไม่พบ Firebase API Key\n\nกรุณาแก้ไขโค้ดส่วน 'firebaseConfig' แล้วใส่ค่า Config ของคุณเอง");
+                }
             }
         };
 
@@ -434,6 +467,9 @@
                 }
             }, (error) => {
                 console.error("Firestore Listen Error:", error);
+                if (error.code === 'permission-denied') {
+                    console.log("Permission denied. Check Firestore Rules.");
+                }
             });
         }
 
