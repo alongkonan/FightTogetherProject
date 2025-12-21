@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>โครงการสู้ไปด้วยกัน - Fight Together</title>
+    
+    <!-- Google Fonts: Kanit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,200;0,400;0,600;0,800;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Config Tailwind Theme -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        fireStart: '#FF416C',
+                        fireEnd: '#FF4B2B',
+                    },
+                    fontFamily: {
+                        sans: ['Kanit', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Styles & Animations */
+        body {
+            font-family: 'Kanit', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        .bg-fire-gradient {
+            background: linear-gradient(90deg, #FF416C, #FF4B2B);
+        }
+
+        .text-fire-gradient {
+            background: linear-gradient(90deg, #FF416C, #FF4B2B);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .btn-fire {
+            background: linear-gradient(90deg, #FF416C, #FF4B2B);
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 75, 43, 0.4);
+        }
+
+        .btn-fire:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 75, 43, 0.6);
+            filter: brightness(1.1);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Entrance Animations */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .fade-in-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-white/95 backdrop-blur-md shadow-sm transition-all duration-300" id="navbar">
+        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <!-- Logo Area -->
+            <a href="#" class="flex items-center gap-2 group">
+                <img src="https://lh3.googleusercontent.com/d/1PlZy8oRjuobngK8h_SnT0K-aPXTQ_tAX" alt="Logo โครงการสู้ไปด้วยกัน" class="h-12 w-auto object-contain group-hover:scale-105 transition-transform duration-300" onerror="this.src='https://placehold.co/100x100?text=Logo';">
+                <span class="text-xl font-bold text-fire-gradient hidden sm:block">สู้ไปด้วยกัน</span>
+            </a>
+
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex items-center space-x-8 font-medium">
+                <a href="#home" class="hover:text-fireEnd transition-colors">หน้าแรก</a>
+                <a href="#about" class="hover:text-fireEnd transition-colors">เกี่ยวกับโครงการ</a>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-btn" class="md:hidden text-gray-700 focus:outline-none">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu Panel -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100 absolute w-full">
+            <div class="flex flex-col px-6 py-4 space-y-4 font-medium">
+                <a href="#home" class="hover:text-fireEnd">หน้าแรก</a>
+                <a href="#about" class="hover:text-fireEnd">เกี่ยวกับโครงการ</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="home" class="relative pt-24 pb-16 lg:pt-32 lg:pb-24 overflow-hidden">
+        <!-- Background Shape -->
+        <div class="absolute top-0 right-0 -z-10 w-1/2 h-full bg-fire-gradient opacity-10 skew-x-12 transform origin-top-right"></div>
+        <div class="absolute bottom-0 left-0 -z-10 w-64 h-64 bg-fire-gradient opacity-5 rounded-full blur-3xl"></div>
+
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col-reverse lg:flex-row items-center gap-12">
+                <!-- Text Content -->
+                <div class="lg:w-1/2 text-center lg:text-left fade-in-up">
+                    <div class="inline-block px-4 py-1 mb-4 text-sm font-semibold text-white bg-fire-gradient rounded-full shadow-md">
+                        <i class="fas fa-fire mr-1"></i> ติวเข้ม เต็มพลัง
+                    </div>
+                    <h1 class="text-4xl lg:text-6xl font-extrabold leading-tight mb-6">
+                        ปลุกไฟในตัวคุณ <br>
+                        <span class="text-fire-gradient">พร้อมสู้ทุกสนามสอบ</span>
+                    </h1>
+                    <p class="text-lg text-gray-600 mb-8 max-w-lg mx-auto lg:mx-0">
+                        โครงการติวฟรีที่จะเปลี่ยนความกลัวเป็นความกล้า เติมเต็มความรู้ด้วยความร้อนแรง พร้อมพาน้องๆ ไปถึงฝัน สู้ไปด้วยกัน!
+                    </p>
+                    <div class="flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
+                        <a href="#about" class="btn-fire px-8 py-3 rounded-full font-bold text-lg flex items-center justify-center gap-2">
+                            รู้จักเรามากขึ้น <i class="fas fa-arrow-down"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Hero Image/Graphic -->
+                <div class="lg:w-1/2 flex justify-center fade-in-up delay-100">
+                    <div class="relative w-full max-w-md aspect-square flex items-center justify-center">
+                        <div class="absolute inset-0 bg-fire-gradient rounded-full opacity-20 blur-3xl animate-pulse"></div>
+                        <img src="https://lh3.googleusercontent.com/d/1PlZy8oRjuobngK8h_SnT0K-aPXTQ_tAX" alt="Hero Logo" class="relative w-3/4 h-auto drop-shadow-2xl hover:scale-105 transition-transform duration-500 cursor-pointer">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Stats / Features Bar -->
+    <section class="bg-fire-gradient text-white py-10 shadow-lg relative z-10">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-white/20">
+                <div class="fade-in-up">
+                    <div class="text-3xl lg:text-4xl font-bold">500+</div>
+                    <div class="text-sm lg:text-base opacity-90">นักเรียนเข้าร่วม</div>
+                </div>
+                <div class="fade-in-up delay-100">
+                    <div class="text-3xl lg:text-4xl font-bold">20+</div>
+                    <div class="text-sm lg:text-base opacity-90">ติวเตอร์คุณภาพ</div>
+                </div>
+                <div class="fade-in-up delay-200">
+                    <div class="text-3xl lg:text-4xl font-bold">100%</div>
+                    <div class="text-sm lg:text-base opacity-90">ฟรี ไม่มีค่าใช้จ่าย</div>
+                </div>
+                <div class="fade-in-up delay-300">
+                    <div class="text-3xl lg:text-4xl font-bold">Online</div>
+                    <div class="text-sm lg:text-base opacity-90">& On-site</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16 fade-in-up">
+                <h2 class="text-3xl lg:text-4xl font-extrabold mb-4">ทำไมต้อง <span class="text-fire-gradient">สู้ไปด้วยกัน?</span></h2>
+                <div class="w-24 h-1 bg-fire-gradient mx-auto rounded-full"></div>
+                <p class="text-gray-600 mt-4 max-w-2xl mx-auto">
+                    เราเชื่อว่า "ความพยายามไม่เคยทรยศใคร" โครงการนี้เกิดขึ้นเพื่อรวบรวมพลังใจและพลังความรู้ ส่งต่อให้น้องๆ ทุกคนได้เข้าถึงการศึกษาที่มีคุณภาพ
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="group p-8 rounded-2xl bg-white border border-gray-100 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 fade-in-up">
+                    <div class="w-14 h-14 rounded-lg bg-red-50 flex items-center justify-center mb-6 group-hover:bg-fire-gradient transition-colors duration-300">
+                        <i class="fas fa-bolt text-2xl text-[#FF416C] group-hover:text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Fast & Intensive</h3>
+                    <p class="text-gray-500">ติวเข้มข้น กระชับ ตรงจุด เน้นเทคนิคที่ใช้ได้จริงในสนามสอบ ประหยัดเวลาแต่ได้ผลลัพธ์สูงสุด</p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="group p-8 rounded-2xl bg-white border border-gray-100 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 fade-in-up delay-100">
+                    <div class="w-14 h-14 rounded-lg bg-orange-50 flex items-center justify-center mb-6 group-hover:bg-fire-gradient transition-colors duration-300">
+                        <i class="fas fa-heart text-2xl text-[#FF4B2B] group-hover:text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Passion Driven</h3>
+                    <p class="text-gray-500">สอนด้วยใจ ทีมติวเตอร์ที่มีพลังล้นเหลือ พร้อมปลุกไฟให้น้องๆ สนุกไปกับการเรียนรู้ ไม่น่าเบื่อ</p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="group p-8 rounded-2xl bg-white border border-gray-100 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 fade-in-up delay-200">
+                    <div class="w-14 h-14 rounded-lg bg-pink-50 flex items-center justify-center mb-6 group-hover:bg-fire-gradient transition-colors duration-300">
+                        <i class="fas fa-users text-2xl text-[#FF416C] group-hover:text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Community</h3>
+                    <p class="text-gray-500">ไม่ใช่แค่การเรียน แต่คือครอบครัว มีเพื่อนร่วมอุดมการณ์ คอยช่วยเหลือและ "สู้ไปด้วยกัน" จนถึงวันสอบ</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact" class="bg-gray-900 text-gray-300 py-12">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col items-center text-center">
+                <div class="flex items-center gap-2 mb-4">
+                    <img src="https://lh3.googleusercontent.com/d/1PlZy8oRjuobngK8h_SnT0K-aPXTQ_tAX" alt="Logo" class="h-10 w-auto brightness-200 grayscale contrast-200" onerror="this.src='https://placehold.co/100x100?text=Logo';">
+                    <span class="text-xl font-bold text-white">โครงการสู้ไปด้วยกัน</span>
+                </div>
+                <p class="text-sm text-gray-400 mb-6 max-w-lg">
+                    โครงการเพื่อการศึกษาที่มุ่งเน้นการสร้างแรงบันดาลใจและมอบความรู้ให้กับเยาวชนไทย สู้เพื่ออนาคตที่ดีกว่า
+                </p>
+                
+                <div class="border-t border-gray-800 pt-8 w-full text-center text-sm text-gray-500">
+                    &copy; 2023 Fight Together Project. All rights reserved. Designed with <i class="fas fa-heart text-red-500 mx-1"></i> & Passion.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Mobile Menu Toggle
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+        });
+
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                menu.classList.add('hidden');
+            });
+        });
+
+        // Scroll Animation Observer
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    // observer.unobserve(entry.target); // Keep observing if you want re-animation, otherwise unobserve
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in-up').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Navbar Scroll Effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('shadow-md');
+                navbar.classList.replace('bg-white/95', 'bg-white/98');
+            } else {
+                navbar.classList.remove('shadow-md');
+                navbar.classList.replace('bg-white/98', 'bg-white/95');
+            }
+        });
+    </script>
+</body>
+</html>
