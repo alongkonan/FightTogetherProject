@@ -39,6 +39,28 @@
             font-family: 'Kanit', sans-serif;
             scroll-behavior: smooth;
         }
+        
+        /* Modal Transitions */
+        .modal {
+            transition: opacity 0.3s ease-in-out;
+        }
+        .modal-content {
+            transition: transform 0.3s ease-in-out;
+        }
+        .modal.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .modal:not(.hidden) {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal.hidden .modal-content {
+            transform: scale(0.95);
+        }
+        .modal:not(.hidden) .modal-content {
+            transform: scale(1);
+        }
 
         .bg-fire-gradient {
             background: linear-gradient(90deg, #FF416C, #FF4B2B);
@@ -230,14 +252,347 @@
                     โครงการเพื่อการศึกษาที่มุ่งเน้นการสร้างแรงบันดาลใจและมอบความรู้ให้กับเยาวชนไทย สู้เพื่ออนาคตที่ดีกว่า
                 </p>
                 
-                <div class="border-t border-gray-800 pt-8 w-full text-center text-sm text-gray-500">
+                <div class="border-t border-gray-800 pt-8 w-full text-center text-sm text-gray-500 relative group">
                     &copy; 2023 Fight Together Project. All rights reserved. Designed with <i class="fas fa-heart text-red-500 mx-1"></i> & Passion.
+                    
+                    <!-- Hidden Admin Button -->
+                    <button onclick="window.openAdminLogin()" class="absolute bottom-0 right-0 opacity-0 group-hover:opacity-30 hover:!opacity-100 transition-opacity text-xs p-2">
+                        <i class="fas fa-lock"></i> Admin
+                    </button>
                 </div>
             </div>
         </div>
     </footer>
 
-    <!-- Scripts -->
+    <!-- ================= MODALS ================= -->
+
+    <!-- 1. Announcement Popup (Public) -->
+    <div id="announcement-modal" class="modal hidden fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+        <div class="modal-content bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden relative max-h-[90vh] overflow-y-auto">
+            <div class="bg-fire-gradient p-6 text-white text-center relative sticky top-0 z-10">
+                <button onclick="window.closeModal('announcement-modal')" class="absolute top-4 right-4 text-white/80 hover:text-white transition-colors">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+                <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3 backdrop-blur-md">
+                    <i class="fas fa-bullhorn text-3xl"></i>
+                </div>
+                <h3 id="popup-display-title" class="text-2xl font-bold">แจ้งเตือนกิจกรรม</h3>
+            </div>
+            <div class="p-8 text-center">
+                <!-- Media Container (Image/Video) -->
+                <div id="popup-media-container" class="mb-4 hidden">
+                    <!-- Dynamic Content -->
+                </div>
+
+                <p id="popup-display-message" class="text-gray-600 text-lg leading-relaxed mb-6 whitespace-pre-wrap">
+                    <!-- Message content will go here -->
+                </p>
+                <button onclick="window.closeModal('announcement-modal')" class="btn-fire w-full py-3 rounded-xl font-bold text-lg shadow-lg">
+                    รับทราบ
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Admin Login Modal -->
+    <div id="admin-login-modal" class="modal hidden fixed inset-0 z-[110] flex items-center justify-center bg-black/80 p-4">
+        <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-sm p-6">
+            <h3 class="text-xl font-bold text-gray-800 mb-4 text-center">ผู้ดูแลระบบ (Admin)</h3>
+            <div class="mb-4">
+                <label class="block text-sm text-gray-600 mb-1">รหัสผ่าน</label>
+                <input type="password" id="admin-password" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-[#FF416C]" placeholder="Password">
+                <p id="login-error" class="text-red-500 text-xs mt-1 hidden">รหัสผ่านไม่ถูกต้อง</p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="window.closeModal('admin-login-modal')" class="w-1/2 py-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50">ยกเลิก</button>
+                <button onclick="window.checkAdminPassword()" class="w-1/2 py-2 rounded-lg bg-gray-900 text-white hover:bg-black">เข้าสู่ระบบ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Admin Dashboard (Settings) -->
+    <div id="admin-dashboard-modal" class="modal hidden fixed inset-0 z-[110] flex items-center justify-center bg-black/80 p-4">
+        <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6 border-b pb-4 sticky top-0 bg-white z-10">
+                <h3 class="text-xl font-bold text-gray-800"><i class="fas fa-cog text-[#FF416C] mr-2"></i>ตั้งค่าป๊อปอัพ (Firebase)</h3>
+                <button onclick="window.adminLogout()" class="text-sm text-red-500 hover:underline">ออกจากระบบ</button>
+            </div>
+            
+            <div class="space-y-4">
+                <!-- Toggle Switch -->
+                <div class="flex items-center justify-between bg-gray-50 p-3 rounded-lg">
+                    <span class="font-medium text-gray-700">สถานะป๊อปอัพ</span>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="popup-active" class="sr-only peer">
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#FF416C]"></div>
+                        <span class="ml-3 text-sm font-medium text-gray-900 peer-checked:text-[#FF416C]">เปิดใช้งาน</span>
+                    </label>
+                </div>
+
+                <!-- Title & Message -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">หัวข้อประกาศ (Title)</label>
+                    <input type="text" id="popup-input-title" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-[#FF416C]" placeholder="เช่น ตารางเรียนวันนี้">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">ข้อความรายละเอียด (Message)</label>
+                    <textarea id="popup-input-message" rows="3" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-[#FF416C]" placeholder="รายละเอียดการเรียน เวลา หรือลิงก์ Zoom..."></textarea>
+                </div>
+
+                <!-- Media Attachment Section -->
+                <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                    <label class="block text-sm font-bold text-blue-800 mb-2"><i class="fas fa-paperclip mr-1"></i> แนบสื่อ (Media)</label>
+                    
+                    <div class="mb-3">
+                        <label class="block text-xs text-gray-600 mb-1">ประเภทสื่อ</label>
+                        <select id="popup-media-type" class="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none" onchange="window.toggleMediaInput()">
+                            <option value="none">ไม่มี (ข้อความอย่างเดียว)</option>
+                            <option value="image">รูปภาพ (Image URL)</option>
+                            <option value="youtube">วิดีโอ (YouTube URL)</option>
+                            <option value="mp4">วิดีโอ (MP4 File URL)</option>
+                        </select>
+                    </div>
+
+                    <div id="media-url-group" class="hidden">
+                        <label class="block text-xs text-gray-600 mb-1">ลิงก์ URL</label>
+                        <input type="text" id="popup-media-url" class="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:border-blue-400" placeholder="วางลิงก์รูปภาพ, YouTube หรือไฟล์ MP4 ที่นี่...">
+                        <p class="text-[10px] text-gray-500 mt-1">
+                            * รูปภาพ: .jpg, .png<br>
+                            * YouTube: ลิงก์ปกติ (youtube.com/watch?v=...)<br>
+                            * MP4: ลิงก์ตรงที่ลงท้ายด้วย .mp4 (Direct Link)
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-2 mt-6">
+                <button onclick="window.closeModal('admin-dashboard-modal')" class="w-1/3 py-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50">ปิด</button>
+                <button onclick="window.savePopupSettings()" class="w-2/3 py-2 rounded-lg bg-fire-gradient text-white shadow-md hover:shadow-lg transition-all" id="btn-save">
+                    บันทึกและประกาศ
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts (Firebase Module) -->
+    <script type="module">
+        // Import Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Initialize Firebase
+        const firebaseConfig = JSON.parse(__firebase_config);
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+        // Admin Password
+        const ADMIN_PASS = 'ftadmin';
+        let currentUser = null;
+        let currentPopupData = null;
+
+        // --- Auth Logic ---
+        const initAuth = async () => {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (error) {
+                console.error("Auth Error:", error);
+            }
+        };
+
+        initAuth();
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+                setupRealtimeListener();
+            }
+        });
+
+        // --- Realtime Listener ---
+        function setupRealtimeListener() {
+            if (!currentUser) return;
+            
+            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'announcements', 'popup_config');
+            
+            onSnapshot(docRef, (docSnapshot) => {
+                if (docSnapshot.exists()) {
+                    const data = docSnapshot.data();
+                    currentPopupData = data;
+                    
+                    if (!document.getElementById('admin-dashboard-modal').classList.contains('hidden')) {
+                        updateDashboardUI(data);
+                    }
+                    
+                    handlePopupDisplay(data);
+                }
+            }, (error) => {
+                console.error("Firestore Listen Error:", error);
+            });
+        }
+
+        function updateDashboardUI(data) {
+            document.getElementById('popup-active').checked = data.active || false;
+            document.getElementById('popup-input-title').value = data.title || '';
+            document.getElementById('popup-input-message').value = data.message || '';
+            
+            // Media fields
+            document.getElementById('popup-media-type').value = data.mediaType || 'none';
+            document.getElementById('popup-media-url').value = data.mediaUrl || '';
+            
+            window.toggleMediaInput(); // Update visibility based on value
+        }
+
+        // Helper: Extract YouTube ID
+        function getYoutubeId(url) {
+            if (!url) return null;
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[2].length === 11) ? match[2] : null;
+        }
+
+        // Logic to show/hide popup & render content
+        function handlePopupDisplay(data) {
+            const modal = document.getElementById('announcement-modal');
+            const displayTitle = document.getElementById('popup-display-title');
+            const displayMessage = document.getElementById('popup-display-message');
+            const mediaContainer = document.getElementById('popup-media-container');
+
+            if (data.active) {
+                displayTitle.textContent = data.title;
+                displayMessage.innerText = data.message;
+                
+                // --- Media Rendering Logic ---
+                mediaContainer.innerHTML = ''; // Clear previous
+                mediaContainer.classList.add('hidden');
+
+                if (data.mediaType === 'image' && data.mediaUrl) {
+                    mediaContainer.classList.remove('hidden');
+                    mediaContainer.innerHTML = `<img src="${data.mediaUrl}" class="w-full h-auto rounded-lg shadow-sm border border-gray-200 object-cover max-h-64 mx-auto" alt="Announcement Image" onerror="this.style.display='none'">`;
+                } else if (data.mediaType === 'youtube' && data.mediaUrl) {
+                    const videoId = getYoutubeId(data.mediaUrl);
+                    if (videoId) {
+                        mediaContainer.classList.remove('hidden');
+                        mediaContainer.innerHTML = `<div class="relative pt-[56.25%] w-full bg-black rounded-lg overflow-hidden"><iframe src="https://www.youtube.com/embed/${videoId}" class="absolute top-0 left-0 w-full h-full" frameborder="0" allowfullscreen></iframe></div>`;
+                    }
+                } else if (data.mediaType === 'mp4' && data.mediaUrl) {
+                    mediaContainer.classList.remove('hidden');
+                    mediaContainer.innerHTML = `
+                        <video controls class="w-full rounded-lg shadow-sm border border-gray-200 bg-black max-h-80 mx-auto">
+                            <source src="${data.mediaUrl}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>`;
+                }
+
+                // Show modal if hidden
+                if (modal.classList.contains('hidden')) {
+                     window.openModal('announcement-modal');
+                }
+            } else {
+                if (!modal.classList.contains('hidden')) {
+                    window.closeModal('announcement-modal');
+                }
+            }
+        }
+
+        // --- Global Functions ---
+
+        window.openModal = (id) => {
+            document.getElementById(id).classList.remove('hidden');
+        };
+
+        window.closeModal = (id) => {
+            document.getElementById(id).classList.add('hidden');
+        };
+
+        window.openAdminLogin = () => {
+            document.getElementById('admin-password').value = '';
+            document.getElementById('login-error').classList.add('hidden');
+            window.openModal('admin-login-modal');
+        };
+
+        window.checkAdminPassword = () => {
+            const input = document.getElementById('admin-password').value;
+            if (input === ADMIN_PASS) {
+                window.closeModal('admin-login-modal');
+                if (currentPopupData) {
+                    updateDashboardUI(currentPopupData);
+                }
+                window.openModal('admin-dashboard-modal');
+            } else {
+                document.getElementById('login-error').classList.remove('hidden');
+            }
+        };
+
+        window.adminLogout = () => {
+            window.closeModal('admin-dashboard-modal');
+            alert('ออกจากระบบเรียบร้อยแล้ว');
+        };
+
+        window.toggleMediaInput = () => {
+            const type = document.getElementById('popup-media-type').value;
+            const group = document.getElementById('media-url-group');
+            if (type === 'none') {
+                group.classList.add('hidden');
+            } else {
+                group.classList.remove('hidden');
+            }
+        };
+
+        window.savePopupSettings = async () => {
+            if (!currentUser) {
+                alert("กรุณารอการเชื่อมต่อสักครู่...");
+                return;
+            }
+
+            const btn = document.getElementById('btn-save');
+            const originalText = btn.innerText;
+            btn.innerText = "กำลังบันทึก...";
+            btn.disabled = true;
+
+            const isActive = document.getElementById('popup-active').checked;
+            const title = document.getElementById('popup-input-title').value;
+            const message = document.getElementById('popup-input-message').value;
+            const mediaType = document.getElementById('popup-media-type').value;
+            const mediaUrl = document.getElementById('popup-media-url').value;
+
+            try {
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'announcements', 'popup_config');
+                await setDoc(docRef, {
+                    active: isActive,
+                    title: title,
+                    message: message,
+                    mediaType: mediaType,
+                    mediaUrl: mediaUrl,
+                    updatedAt: new Date().toISOString()
+                });
+                
+                alert('บันทึกเรียบร้อย! นักเรียนทุกคนจะเห็นป๊อปอัพนี้ทันที');
+                window.closeModal('admin-dashboard-modal');
+
+            } catch (error) {
+                console.error("Save Error:", error);
+                alert("เกิดข้อผิดพลาด: " + error.message);
+            } finally {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
+        };
+
+        // UI Interactions
+        document.getElementById('admin-password').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') window.checkAdminPassword();
+        });
+
+    </script>
+    
+    <!-- UI Toggle Scripts (Non-Module) -->
     <script>
         // Mobile Menu Toggle
         const btn = document.getElementById('mobile-menu-btn');
@@ -247,7 +602,6 @@
             menu.classList.toggle('hidden');
         });
 
-        // Close mobile menu when clicking a link
         document.querySelectorAll('#mobile-menu a').forEach(link => {
             link.addEventListener('click', () => {
                 menu.classList.add('hidden');
@@ -255,24 +609,14 @@
         });
 
         // Scroll Animation Observer
-        const observerOptions = {
-            root: null,
-            rootMargin: '0px',
-            threshold: 0.1
-        };
-
-        const observer = new IntersectionObserver((entries, observer) => {
+        const observerOptions = { root: null, rootMargin: '0px', threshold: 0.1 };
+        const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                    // observer.unobserve(entry.target); // Keep observing if you want re-animation, otherwise unobserve
-                }
+                if (entry.isIntersecting) entry.target.classList.add('visible');
             });
         }, observerOptions);
 
-        document.querySelectorAll('.fade-in-up').forEach(el => {
-            observer.observe(el);
-        });
+        document.querySelectorAll('.fade-in-up').forEach(el => observer.observe(el));
 
         // Navbar Scroll Effect
         window.addEventListener('scroll', () => {
