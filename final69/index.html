@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exam Prep Dashboard - ตารางเตรียมสอบปลายภาค</title>
+    <title>Final Exam Infographic - ตารางเตรียมสอบปลายภาค</title>
     
-    <!-- Google Fonts: Sarabun for readability -->
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts: Sarabun (Thai) & Montserrat (Headings) -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -14,408 +14,384 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
-    <!-- FontAwesome -->
+    <!-- FontAwesome for Icons (NO SVG graphics used directly) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Chosen Palette: "Energetic & Playful" -->
+    <!-- 
+        Primary Dark: #2D3748 (Slate)
+        Vibrant Red/Coral: #FF6B6B
+        Vibrant Teal: #4ECDC4
+        Vibrant Yellow: #FFE66D
+        Accent Blue: #1A535C
+        Background: #F7FFF7 (Mint Cream / White)
+    -->
 
     <style>
         body {
             font-family: 'Sarabun', sans-serif;
-            background-color: #fdfbf7; /* Warm neutral background */
-            color: #374151;
+            background-color: #F7FFF7;
+            color: #2D3748;
         }
         
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1; 
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1; 
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8; 
+        h1, h2, h3, h4, .kpi-number {
+            font-family: 'Montserrat', sans-serif;
         }
 
-        /* Chart Container Styles - Strictly Enforced */
+        /* Chart Container Styling - MANDATORY */
         .chart-container {
             position: relative;
             width: 100%;
-            max-width: 500px; /* Max width constraint */
+            max-width: 600px;
             margin-left: auto;
             margin-right: auto;
-            height: 300px; /* Base height */
+            height: 350px;
             max-height: 400px;
         }
         
-        .timeline-line::before {
+        @media (max-width: 640px) {
+            .chart-container {
+                height: 250px;
+            }
+        }
+
+        /* Custom Timeline Styles */
+        .timeline-item {
+            position: relative;
+            padding-left: 2rem;
+            border-left: 4px solid #e2e8f0;
+        }
+        
+        .timeline-item::before {
             content: '';
             position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 24px;
-            width: 2px;
-            background: #e2e8f0;
-            z-index: 0;
+            left: -10px;
+            top: 10px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background-color: #fff;
+            border: 4px solid #4ECDC4;
+        }
+
+        .timeline-item.break::before {
+            border-color: #FF6B6B;
+        }
+
+        .timeline-item:last-child {
+            border-left-color: transparent;
         }
 
         .active-tab {
-            border-bottom: 3px solid #f59e0b;
-            color: #b45309;
-            font-weight: 700;
+            background-color: #1A535C;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
         
         .inactive-tab {
-            border-bottom: 3px solid transparent;
-            color: #6b7280;
+            background-color: white;
+            color: #1A535C;
+            border: 1px solid #e2e8f0;
         }
+        
         .inactive-tab:hover {
-            color: #374151;
-            border-bottom: 3px solid #d1d5db;
+            background-color: #f1f5f9;
         }
 
-        .category-pill {
-            font-size: 0.75rem;
-            padding: 2px 8px;
-            border-radius: 9999px;
-            font-weight: 600;
+        /* Card Hover Effects */
+        .info-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .info-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
     </style>
-    
-    <!-- Chosen Palette: Warm Neutral Background (#fdfbf7) with Category Colors: 
-         Science/Math (Blue), Language (Pink), Social/Gen (Amber), Break (Gray) -->
 
-    <!-- Application Structure Plan: 
-         1. Header: Summary of the goal (3 days) and key technique (Pomodoro).
-         2. Dashboard Overview: Charts showing subject weight and study/break balance.
-         3. Interactive Schedule: Tabs for each day. Vertical timeline layout.
-            - Interactions: Filter by category, Click to see 'Teacher' and 'Focus' details.
-            - Visuals: Progress bars simulating Pomodoro cycles.
-         4. Rationale: The user needs to manage energy over 3 intense days. Grouping by day and providing 
-            visual cues for "Break" vs "Study" helps mental preparation. -->
+    <!-- Application Structure Plan:
+        1. Hero Section: High-energy title and summary of the goal (3-Day Battle Plan).
+        2. KPI Dashboard: 3 Key metrics (Days, Subjects, Total Hours) to give an instant overview.
+        3. Strategic Analysis (Charts):
+           - Subject Composition (Doughnut): To show which categories dominate the schedule.
+           - Daily Workload (Stacked Bar): To compare Study vs. Break time, highlighting the endurance needed.
+        4. The Battle Timeline (Interactive Schedule): 
+           - Tabbed interface for the 3 specific dates.
+           - Vertical timeline flow for easy mobile scrolling.
+           - Detailed cards for each subject/slot.
+        5. Tactic: Pomodoro: A visual explanation of the 50/10 rule used in the schedule.
+    -->
 
     <!-- Visualization & Content Choices:
-         - Doughnut Chart: Shows the proportion of subjects (Sci vs Lang vs Social). Goal: See content balance.
-         - Bar Chart: Study hours vs Break hours per day. Goal: Workload management.
-         - Timeline Cards: Text-based cards for each slot. Goal: Detailed instruction reading.
-         - Pomodoro Visuals: CSS-based bars inside cards. Goal: Quick understanding of the 50/10 rhythm.
-         - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-         
+        - Chart 1 (Doughnut): 'Subject Weight'. Goal: Compare composition. Justification: Easy to see that Science/Math is a huge chunk. Library: Chart.js (Canvas).
+        - Chart 2 (Stacked Bar): 'Study vs Break Balance'. Goal: Compare daily load. Justification: Shows the intensity of Day 1 vs Day 3. Library: Chart.js (Canvas).
+        - Timeline: HTML/Tailwind. Goal: Process Flow. Justification: Linear time data is best consumed vertically on mobile.
+        - Icons: FontAwesome. Goal: Inform/Decorate. NO SVG used.
+    -->
+    
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 </head>
-<body class="bg-stone-50 min-h-screen">
+<body class="antialiased">
 
-    <!-- Navigation / Header -->
-    <header class="bg-white shadow-sm sticky top-0 z-20 border-b border-stone-200">
-        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-            <div>
-                <h1 class="text-xl md:text-2xl font-bold text-stone-800">
-                    <i class="fas fa-book-open text-amber-500 mr-2"></i> Dashboard เตรียมสอบปลายภาค
-                </h1>
-                <p class="text-sm text-stone-500 hidden md:block">แผนการอ่านหนังสือ 3 วัน: 22 ก.พ., 28 ก.พ., 1 มี.ค.</p>
-            </div>
-            <div class="flex items-center space-x-4">
-                <div class="hidden md:flex flex-col items-end mr-4">
-                    <span class="text-xs font-semibold text-stone-400 uppercase tracking-wide">เทคนิคหลัก</span>
-                    <span class="text-sm font-bold text-red-500 bg-red-50 px-2 py-1 rounded">Pomodoro 50/10 🍅</span>
-                </div>
-                <button onclick="window.print()" class="bg-stone-100 hover:bg-stone-200 text-stone-600 px-3 py-2 rounded-lg transition">
-                    <i class="fas fa-print"></i>
-                </button>
+    <!-- Hero Section -->
+    <header class="bg-[#1A535C] text-white py-12 shadow-lg">
+        <div class="container mx-auto px-4 text-center">
+            <!-- เพิ่มโลโก้ที่นี่ -->
+            <img src="https://lh3.googleusercontent.com/d/1hqFLC1j7rQLz6XkMruMle6t2c33l6LkM" alt="โลโก้" class="h-24 md:h-32 mx-auto mb-6 object-contain drop-shadow-xl">
+            
+            <h1 class="text-3xl md:text-5xl font-extrabold mb-4 tracking-tight">🚀 FINAL EXAM BATTLE PLAN</h1>
+            <p class="text-xl md:text-2xl font-light text-[#4ECDC4]">แผนพิชิตการสอบปลายภาค: 3 วันอันตราย</p>
+            <div class="mt-6 flex justify-center gap-4 flex-wrap">
+                <span class="bg-[#FF6B6B] px-4 py-1 rounded-full text-sm font-bold shadow-md">22 ก.พ.</span>
+                <span class="bg-[#FF6B6B] px-4 py-1 rounded-full text-sm font-bold shadow-md">28 ก.พ.</span>
+                <span class="bg-[#FF6B6B] px-4 py-1 rounded-full text-sm font-bold shadow-md">1 มี.ค.</span>
             </div>
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="container mx-auto px-4 py-8 pb-20">
-        
-        <!-- Intro Section -->
-        <section class="mb-8">
-            <div class="bg-white rounded-2xl shadow-sm p-6 border border-stone-100">
-                <h2 class="text-lg font-bold text-stone-800 mb-2">🎯 ภาพรวมเป้าหมาย</h2>
-                <p class="text-stone-600 leading-relaxed">
-                    ยินดีต้อนรับสู่ศูนย์กลางการเตรียมสอบของคุณ แอปพลิเคชันนี้รวบรวมตารางอ่านหนังสือ 16 วิชาในช่วงโค้งสุดท้าย 3 วัน 
-                    โดยเน้นการกระจายวิชาคำนวณและวิชาท่องจำเพื่อลดความล้าของสมอง คุณสามารถดูสัดส่วนเวลา ตรวจสอบรายชื่อครูผู้สอน 
-                    และเทคนิคการอ่านจำเพาะของแต่ละวิชาได้ที่นี่
+    <main class="container mx-auto px-4 py-8 max-w-6xl">
+
+        <!-- Introduction -->
+        <section class="mb-12 text-center max-w-3xl mx-auto">
+            <h2 class="text-2xl font-bold text-[#1A535C] mb-4">🎯 เป้าหมายของเรา</h2>
+            <p class="text-lg text-gray-600 leading-relaxed">
+                การเตรียมสอบครั้งนี้ไม่ใช่แค่การอ่านหนังสือ แต่คือการบริหารจัดการเวลาและพลังงาน เรามีเวลา 3 วันหลัก (22 ก.พ., 28 ก.พ., 1 มี.ค.) เพื่อเก็บเนื้อหาทั้ง 16 วิชา แผนนี้ถูกออกแบบมาโดยใช้เทคนิค <strong>Pomodoro</strong> (โฟกัส 50 / พัก 10) เพื่อให้สมองของคุณสดชื่นตลอดการเดินทาง
+            </p>
+        </section>
+
+        <!-- KPI Grid -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div class="bg-white p-6 rounded-xl shadow-md border-b-4 border-[#FF6B6B] info-card text-center">
+                <div class="text-[#FF6B6B] text-4xl mb-2"><i class="fa-solid fa-calendar-day"></i></div>
+                <div class="text-4xl font-bold text-gray-800 kpi-number">3</div>
+                <div class="text-gray-500 font-semibold uppercase tracking-wide">วันแห่งการเตรียมตัว</div>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-md border-b-4 border-[#4ECDC4] info-card text-center">
+                <div class="text-[#4ECDC4] text-4xl mb-2"><i class="fa-solid fa-book-open"></i></div>
+                <div class="text-4xl font-bold text-gray-800 kpi-number">16</div>
+                <div class="text-gray-500 font-semibold uppercase tracking-wide">วิชาที่ต้องพิชิต</div>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-md border-b-4 border-[#FFE66D] info-card text-center">
+                <div class="text-[#FFE66D] text-4xl mb-2"><i class="fa-solid fa-clock"></i></div>
+                <div class="text-4xl font-bold text-gray-800 kpi-number">15+</div>
+                <div class="text-gray-500 font-semibold uppercase tracking-wide">ชั่วโมงอ่านหนังสือรวม</div>
+            </div>
+        </section>
+
+        <!-- Charts Section -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+            
+            <!-- Chart 1: Subject Composition -->
+            <div class="bg-white p-6 rounded-xl shadow-lg">
+                <h3 class="text-xl font-bold text-[#1A535C] mb-2 border-l-4 border-[#4ECDC4] pl-3">📊 สัดส่วนเนื้อหา (Subject Mix)</h3>
+                <p class="text-sm text-gray-500 mb-6">กราฟนี้แสดงสัดส่วนของกลุ่มวิชาต่างๆ เพื่อให้เห็นภาพรวมว่าคุณต้องโฟกัสที่จุดไหนมากที่สุด (วิทย์/คณิต กินพื้นที่เยอะที่สุด)</p>
+                <div class="chart-container">
+                    <canvas id="subjectChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Chart 2: Daily Workload -->
+            <div class="bg-white p-6 rounded-xl shadow-lg">
+                <h3 class="text-xl font-bold text-[#1A535C] mb-2 border-l-4 border-[#FF6B6B] pl-3">⚖️ สมดุลเวลา (Workload Balance)</h3>
+                <p class="text-sm text-gray-500 mb-6">เปรียบเทียบชั่วโมงการเรียน vs ชั่วโมงพักในแต่ละวัน วันที่ 1 จะหนักที่สุด ส่วนวันที่ 3 จะเริ่มเบาลงเพื่อเตรียมสอบ</p>
+                <div class="chart-container">
+                    <canvas id="balanceChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Timeline Section -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold text-center text-[#1A535C] mb-8">📅 Timeline การอ่านหนังสือ</h2>
+            
+            <!-- Tabs -->
+            <div class="flex justify-center mb-8 gap-2 md:gap-4">
+                <button onclick="switchTab('day1')" id="tab-day1" class="active-tab px-6 py-3 rounded-lg font-bold transition-all duration-300">
+                    22 ก.พ. (วิทย์-คณิต)
+                </button>
+                <button onclick="switchTab('day2')" id="tab-day2" class="inactive-tab px-6 py-3 rounded-lg font-bold transition-all duration-300">
+                    28 ก.พ. (ภาษา-สังคม)
+                </button>
+                <button onclick="switchTab('day3')" id="tab-day3" class="inactive-tab px-6 py-3 rounded-lg font-bold transition-all duration-300">
+                    1 มี.ค. (เก็บตก)
+                </button>
+            </div>
+
+            <!-- Timeline Content Container -->
+            <div class="bg-white p-4 md:p-8 rounded-2xl shadow-xl border border-gray-100 min-h-[500px]">
+                <div id="timeline-container" class="max-w-3xl mx-auto">
+                    <!-- Dynamic JS content loads here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Pomodoro Explainer -->
+        <section class="bg-[#1A535C] text-white rounded-2xl p-8 mb-12 shadow-xl relative overflow-hidden">
+            <div class="relative z-10 text-center">
+                <h2 class="text-2xl md:text-3xl font-bold mb-6">🍅 เทคนิคลับ: Pomodoro</h2>
+                <p class="text-lg text-gray-200 mb-8 max-w-2xl mx-auto">
+                    อย่าอ่านรวดเดียวจนสมองล้า! ใช้สูตร <strong>50/10</strong> ในทุกวิชาที่มีสัญลักษณ์ <i class="fa-solid fa-stopwatch text-[#FFE66D]"></i>
                 </p>
-            </div>
-        </section>
+                
+                <div class="flex flex-col md:flex-row justify-center items-center gap-4 md:gap-8">
+                    <div class="bg-white text-[#1A535C] px-8 py-6 rounded-xl w-full md:w-64 text-center transform hover:scale-105 transition-transform">
+                        <div class="text-4xl font-bold text-[#FF6B6B] mb-2">50 นาที</div>
+                        <div class="font-bold uppercase">โฟกัสอ่านหนังสือ</div>
+                        <div class="text-xs text-gray-400 mt-2">ห้ามจับมือถือ</div>
+                    </div>
+                    
+                    <div class="text-[#FFE66D] text-3xl animate-pulse">
+                        <i class="fa-solid fa-arrow-right hidden md:block"></i>
+                        <i class="fa-solid fa-arrow-down md:hidden"></i>
+                    </div>
 
-        <!-- Stats & Charts Dashboard -->
-        <section class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <!-- Chart 1: Subject Distribution -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-stone-100 flex flex-col">
-                <div class="mb-4">
-                    <h3 class="font-bold text-stone-700">📊 สัดส่วนกลุ่มวิชา (จำนวนคาบ)</h3>
-                    <p class="text-xs text-stone-400">เน้นหนักที่วิทยาศาสตร์/คำนวณ และ ภาษา</p>
-                </div>
-                <div class="flex-grow flex items-center justify-center bg-stone-50 rounded-xl p-4">
-                    <div class="chart-container">
-                        <canvas id="subjectDistributionChart"></canvas>
+                    <div class="bg-white text-[#1A535C] px-8 py-6 rounded-xl w-full md:w-64 text-center transform hover:scale-105 transition-transform">
+                        <div class="text-4xl font-bold text-[#4ECDC4] mb-2">10 นาที</div>
+                        <div class="font-bold uppercase">พักเบรก</div>
+                        <div class="text-xs text-gray-400 mt-2">ยืดเส้นยืดสาย</div>
                     </div>
                 </div>
             </div>
-
-            <!-- Chart 2: Time Management -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-stone-100 flex flex-col">
-                <div class="mb-4">
-                    <h3 class="font-bold text-stone-700">⏳ เวลาเรียน vs เวลาพัก (ชั่วโมง)</h3>
-                    <p class="text-xs text-stone-400">สมดุลเวลาในแต่ละวัน</p>
-                </div>
-                <div class="flex-grow flex items-center justify-center bg-stone-50 rounded-xl p-4">
-                    <div class="chart-container">
-                        <canvas id="timeManagementChart"></canvas>
-                    </div>
-                </div>
-            </div>
+            <!-- Decorative circle -->
+            <div class="absolute -top-20 -right-20 w-64 h-64 bg-[#4ECDC4] rounded-full opacity-20"></div>
+            <div class="absolute -bottom-20 -left-20 w-64 h-64 bg-[#FF6B6B] rounded-full opacity-20"></div>
         </section>
-
-        <!-- Day Tabs Navigation -->
-        <div class="flex overflow-x-auto border-b border-stone-200 mb-6 bg-white sticky top-16 z-10 shadow-sm rounded-t-lg">
-            <button onclick="switchTab('day1')" id="tab-day1" class="flex-1 py-4 px-6 text-center whitespace-nowrap active-tab transition-colors focus:outline-none">
-                <span class="block text-xs uppercase tracking-wider opacity-70">อาทิตย์</span>
-                <span class="text-lg">22 ก.พ.</span>
-            </button>
-            <button onclick="switchTab('day2')" id="tab-day2" class="flex-1 py-4 px-6 text-center whitespace-nowrap inactive-tab transition-colors focus:outline-none">
-                <span class="block text-xs uppercase tracking-wider opacity-70">เสาร์</span>
-                <span class="text-lg">28 ก.พ.</span>
-            </button>
-            <button onclick="switchTab('day3')" id="tab-day3" class="flex-1 py-4 px-6 text-center whitespace-nowrap inactive-tab transition-colors focus:outline-none">
-                <span class="block text-xs uppercase tracking-wider opacity-70">อาทิตย์</span>
-                <span class="text-lg">1 มี.ค.</span>
-            </button>
-        </div>
-
-        <!-- Schedule Content Area -->
-        <div id="schedule-container" class="relative">
-            <!-- Dynamic Content Injected Here -->
-        </div>
 
     </main>
 
+    <footer class="bg-gray-100 py-8 text-center text-gray-500 text-sm">
+        <p>สร้างสรรค์แผนการเรียนเพื่อความสำเร็จของคุณ</p>
+        <p class="mt-2 text-xs">Based on data from study_schedule.md</p>
+    </footer>
+
     <!-- JavaScript Logic -->
     <script>
-        // --- Data Structure based on study_schedule.md ---
-        const scheduleData = {
-            day1: {
-                date: "22 กุมภาพันธ์",
-                title: "Day 1: เน้นคำนวณและสายวิทย์",
-                desc: "วันแรกสมองสดใส ลุยวิชาหนัก (ฟิสิกส์, คณิต, เคมี) สลับกับวิชาดาราศาสตร์",
-                items: [
-                    { time: "09:00 - 10:30", subject: "ชีว พต.", teacher: "ครูชลธิชา", type: "study", category: "sci", duration: 90, pomodoro: [50, 10, 30], note: "วาด Mind Map ระบบต่างๆ และจำคีย์เวิร์ด" },
-                    { time: "10:30 - 12:00", subject: "คณิต พต.", teacher: "ครูเชษฐ์ธนา", type: "study", category: "math", duration: 90, pomodoro: [50, 10, 30], note: "ทบทวนคอนเซปต์และลุยโจทย์ยาก" },
-                    { time: "12:00 - 13:30", subject: "พักทานข้าว", type: "break", category: "break", duration: 90, icon: "fa-utensils" },
-                    { time: "13:30 - 15:15", subject: "ฟิสิกส์ พต.", teacher: "ครูวรรณศักดิ์", type: "study", category: "sci", duration: 105, pomodoro: [50, 10, 45], note: "เน้นจำสูตรและฝึกทำโจทย์คำนวณ" },
-                    { time: "15:15 - 16:45", subject: "โลกดาราศาสตร์", teacher: "ครูกานต์ธิดา", type: "study", category: "sci", duration: 90, pomodoro: [50, 10, 30], note: "อ่านสรุปและทำความเข้าใจปรากฏการณ์ต่างๆ" },
-                    { time: "16:45 - 19:00", subject: "พักผ่อน", type: "break", category: "break", duration: 135, icon: "fa-person-running" },
-                    { time: "19:00 - 20:00", subject: "ไทย พฐ.", teacher: "ครูเศรษฐพงศ์", type: "study", category: "lang", duration: 60, pomodoro: [50, 10], note: "หลักภาษาและการวิเคราะห์วรรณคดี" },
-                    { time: "20:00 - 21:00", subject: "สุขศึกษา", teacher: "ครูสุทธิพงศ์", type: "study", category: "gen", duration: 60, pomodoro: [50, 10], note: "ทบทวนเนื้อหาแบบเร็วๆ เน้นความเข้าใจ" }
-                ]
-            },
-            day2: {
-                date: "28 กุมภาพันธ์",
-                title: "Day 2: ความจำ ภาษา และสังคม",
-                desc: "เก็บตกวิชาเคมี และเน้นวิชาภาษาอังกฤษ สังคม ที่ต้องใช้ความจำ",
-                items: [
-                    { time: "09:00 - 10:30", subject: "เคมี พต.", teacher: "ครูพิไลวรรณ", type: "study", category: "sci", duration: 90, pomodoro: [50, 10, 30], note: "เน้นสมการเคมีและทฤษฎีสำคัญ" },
-                    { time: "10:30 - 12:00", subject: "คณิต พฐ.", teacher: "ครูสำราญ", type: "study", category: "math", duration: 90, pomodoro: [50, 10, 30], note: "เก็บเนื้อหาพื้นฐานให้แม่นยำ" },
-                    { time: "12:00 - 13:00", subject: "พักทานข้าว", type: "break", category: "break", duration: 60, icon: "fa-utensils" },
-                    { time: "13:00 - 14:30", subject: "Eng พฐ.", teacher: "ครูฐิติรัตน์", type: "study", category: "lang", duration: 90, pomodoro: [50, 10, 30], note: "ทบทวน Grammar และ Vocab" },
-                    { time: "14:30 - 16:00", subject: "Eng อ่าน-เขียน", teacher: "ครูนภัสกร", type: "study", category: "lang", duration: 90, pomodoro: [50, 10, 30], note: "ฝึกทำโจทย์ Reading และโครงสร้างการเขียน" },
-                    { time: "16:00 - 19:00", subject: "พักผ่อน", type: "break", category: "break", duration: 180, icon: "fa-bed" },
-                    { time: "19:00 - 20:00", subject: "สังคม พฐ.", teacher: "ครูชุรีกรณ์", type: "study", category: "soc", duration: 60, pomodoro: [50, 10], note: "สรุปศาสนา หน้าที่พลเมือง ภูมิศาสตร์" },
-                    { time: "20:00 - 21:00", subject: "การงานฯ", teacher: "ครูสมคิด", type: "study", category: "gen", duration: 60, pomodoro: [50, 10], note: "อ่านทบทวนผ่านๆ ตา เก็บแนวคิด" }
-                ]
-            },
-            day3: {
-                date: "1 มีนาคม",
-                title: "Day 3: เก็บตก ทบทวน และวิชาเลือก",
-                desc: "วันสุดท้ายก่อนสอบ เก็บวิชาประวัติศาสตร์ ภาษาจีน และทบทวนรวมยอด",
-                items: [
-                    { time: "09:00 - 10:30", subject: "ประวัติ พฐ.", teacher: "ครูจารุวรรณ", type: "study", category: "soc", duration: 90, pomodoro: [50, 10, 30], note: "ทบทวน Timeline เหตุการณ์สำคัญ" },
-                    { time: "10:30 - 12:00", subject: "จีนสร้างสรรค์", teacher: "ครูจันทา", type: "study", category: "lang", duration: 90, pomodoro: [50, 10, 30], note: "ทบทวนคำศัพท์ พินอิน บทสนทนา" },
-                    { time: "12:00 - 13:00", subject: "พักทานข้าว", type: "break", category: "break", duration: 60, icon: "fa-utensils" },
-                    { time: "13:00 - 14:30", subject: "ฟิสิกส์ พต. (รอบ 2)", teacher: "ครูวรรณศักดิ์", type: "study", category: "sci", duration: 90, pomodoro: [50, 10, 30], note: "ตะลุยข้อสอบเก่า และอุดจุดอ่อน" },
-                    { time: "14:30 - 15:30", subject: "ศิลปะ & แนะแนว", teacher: "ครูอรยา / ครูกาญจนา", type: "study", category: "gen", duration: 60, pomodoro: [50, 10], note: "อ่านผ่านๆ สลับกันทบทวนเนื้อหาเบาๆ" },
-                    { time: "15:30 Onwards", subject: "OVERALL REVIEW", type: "highlight", category: "highlight", duration: 240, icon: "fa-star", note: "ห้ามอ่านเนื้อหาใหม่! ทบทวน Short Note และข้อผิดพลาดเดิม" }
-                ]
-            }
+        // --- Data Handling ---
+        
+        const dailySchedule = {
+            day1: [
+                { time: "09:00 - 10:30", subject: "ชีววิทยา (เพิ่มเติม)", type: "study", note: "ความจำ/ระบบร่างกาย", category: "Science" },
+                { time: "10:30 - 12:00", subject: "คณิตศาสตร์ (เพิ่มเติม)", type: "study", note: "คำนวณ/โจทย์ยาก", category: "Math" },
+                { time: "12:00 - 13:30", subject: "พักทานข้าว", type: "break", note: "เติมพลัง", category: "Break" },
+                { time: "13:30 - 15:15", subject: "ฟิสิกส์ (เพิ่มเติม)", type: "study", note: "สูตร/การเคลื่อนที่", category: "Physics" },
+                { time: "15:15 - 16:45", subject: "โลก ดาราศาสตร์", type: "study", note: "ปรากฏการณ์โลก", category: "Science" },
+                { time: "16:45 - 19:00", subject: "พักผ่อน", type: "break", note: "ออกกำลังกาย/อาบน้ำ", category: "Break" },
+                { time: "19:00 - 20:00", subject: "ภาษาไทย (พื้นฐาน)", type: "study", note: "หลักภาษา", category: "Language" },
+                { time: "20:00 - 21:00", subject: "สุขศึกษา", type: "study", note: "สุขภาพ/สุขอนามัย", category: "General" }
+            ],
+            day2: [
+                { time: "09:00 - 10:30", subject: "เคมี (เพิ่มเติม)", type: "study", note: "ตารางธาตุ/ปฏิกิริยา", category: "Science" },
+                { time: "10:30 - 12:00", subject: "คณิตศาสตร์ (พื้นฐาน)", type: "study", note: "สถิติ/พื้นฐาน", category: "Math" },
+                { time: "12:00 - 13:00", subject: "พักทานข้าว", type: "break", note: "เติมพลัง", category: "Break" },
+                { time: "13:00 - 14:30", subject: "อังกฤษ (พื้นฐาน)", type: "study", note: "Grammar", category: "Language" },
+                { time: "14:30 - 16:00", subject: "อังกฤษ (อ่าน-เขียน)", type: "study", note: "Reading/Writing", category: "Language" },
+                { time: "16:00 - 19:00", subject: "พักผ่อน", type: "break", note: "ผ่อนคลาย", category: "Break" },
+                { time: "19:00 - 20:00", subject: "สังคมศึกษา", type: "study", note: "ศาสนา/หน้าที่พลเมือง", category: "Social" },
+                { time: "20:00 - 21:00", subject: "การงานอาชีพ", type: "study", note: "งานช่าง/งานบ้าน", category: "General" }
+            ],
+            day3: [
+                { time: "09:00 - 10:30", subject: "ประวัติศาสตร์", type: "study", note: "ไทม์ไลน์สำคัญ", category: "Social" },
+                { time: "10:30 - 12:00", subject: "จีนสร้างสรรค์", type: "study", note: "คำศัพท์/วัฒนธรรม", category: "Language" },
+                { time: "12:00 - 13:00", subject: "พักทานข้าว", type: "break", note: "เติมพลัง", category: "Break" },
+                { time: "13:00 - 14:30", subject: "ฟิสิกส์ (เพิ่มเติม) - รอบเก็บตก", type: "study", note: "ทวนจุดอ่อน", category: "Physics" },
+                { time: "14:30 - 15:30", subject: "ศิลปะ & แนะแนว", type: "study", note: "อ่านผ่อนคลาย", category: "General" },
+                { time: "15:30 Onwards", subject: "ทบทวนรวบยอด (Review)", type: "review", note: "ห้ามอ่านของใหม่ เน้นสรุป", category: "Review" }
+            ]
         };
 
-        const categoryColors = {
-            sci: "bg-blue-100 text-blue-800 border-blue-200",
-            math: "bg-indigo-100 text-indigo-800 border-indigo-200",
-            lang: "bg-pink-100 text-pink-800 border-pink-200",
-            soc: "bg-amber-100 text-amber-800 border-amber-200",
-            gen: "bg-emerald-100 text-emerald-800 border-emerald-200",
-            break: "bg-stone-100 text-stone-600 border-stone-200",
-            highlight: "bg-red-50 text-red-800 border-red-200"
-        };
+        // --- Chart.js Configuration & Utilities ---
+        
+        // 1. Label Wrapping Helper
+        function wrapLabel(str, maxChars) {
+            if (str.length <= maxChars) return str;
+            const words = str.split(' ');
+            const lines = [];
+            let currentLine = words[0];
 
-        const categoryLabels = {
-            sci: "วิทยาศาสตร์",
-            math: "คณิตศาสตร์",
-            lang: "ภาษา",
-            soc: "สังคม/ประวัติ",
-            gen: "ทั่วไป (สุข/ศิลปะ/งาน)",
-            highlight: "ทบทวนรวม"
-        };
-
-        // --- Core Functions ---
-
-        function init() {
-            renderCharts();
-            switchTab('day1'); // Default load
-        }
-
-        function switchTab(dayKey) {
-            // Update Tab Styles
-            ['day1', 'day2', 'day3'].forEach(d => {
-                const tab = document.getElementById(`tab-${d}`);
-                if (d === dayKey) {
-                    tab.classList.remove('inactive-tab');
-                    tab.classList.add('active-tab');
+            for (let i = 1; i < words.length; i++) {
+                if (currentLine.length + 1 + words[i].length <= maxChars) {
+                    currentLine += ' ' + words[i];
                 } else {
-                    tab.classList.add('inactive-tab');
-                    tab.classList.remove('active-tab');
+                    lines.push(currentLine);
+                    currentLine = words[i];
                 }
-            });
-
-            renderSchedule(dayKey);
+            }
+            lines.push(currentLine);
+            return lines;
         }
 
-        function renderSchedule(dayKey) {
-            const data = scheduleData[dayKey];
-            const container = document.getElementById('schedule-container');
-            
-            let html = `
-                <div class="mb-6 animate-fade-in-up">
-                    <div class="flex items-center justify-between mb-2">
-                        <h2 class="text-xl font-bold text-stone-800">${data.title}</h2>
-                    </div>
-                    <p class="text-stone-500 text-sm bg-stone-50 p-3 rounded-lg border border-stone-100">
-                        <i class="fas fa-info-circle text-amber-500 mr-2"></i> ${data.desc}
-                    </p>
-                </div>
-                <div class="space-y-4 timeline-line relative pb-10">
-            `;
-
-            data.items.forEach((item, index) => {
-                const isBreak = item.type === 'break';
-                const isHighlight = item.type === 'highlight';
-                
-                // Color Classes
-                const colorClass = categoryColors[item.category] || "bg-gray-100 text-gray-800";
-                
-                // Icon Logic
-                let iconHtml = '';
-                if(isBreak) iconHtml = `<div class="w-10 h-10 rounded-full bg-stone-200 flex items-center justify-center text-stone-500 z-10 relative border-4 border-stone-50"><i class="fas ${item.icon}"></i></div>`;
-                else if(isHighlight) iconHtml = `<div class="w-10 h-10 rounded-full bg-red-500 flex items-center justify-center text-white z-10 relative border-4 border-stone-50 shadow-lg"><i class="fas ${item.icon}"></i></div>`;
-                else iconHtml = `<div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-stone-400 z-10 relative border-4 border-stone-50 shadow-sm text-sm font-bold">${index + 1}</div>`;
-
-                // Pomodoro Bar HTML
-                let pomodoroHtml = '';
-                if (item.pomodoro) {
-                    pomodoroHtml = `<div class="mt-3 flex items-center space-x-1 w-full max-w-xs">
-                        <span class="text-[10px] text-stone-400 w-12">Pomodoro:</span>
-                        <div class="h-2 rounded-l-full bg-red-400 w-[50%] relative group cursor-help">
-                            <span class="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 hidden group-hover:block bg-stone-800 text-white text-xs px-2 py-1 rounded">อ่าน 50 น.</span>
-                        </div>
-                        <div class="h-2 bg-green-400 w-[10%] relative group cursor-help">
-                             <span class="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 hidden group-hover:block bg-stone-800 text-white text-xs px-2 py-1 rounded">พัก 10 น.</span>
-                        </div>`;
-                    
-                    if (item.pomodoro[2]) {
-                        pomodoroHtml += `<div class="h-2 rounded-r-full bg-red-300 w-[${item.pomodoro[2]}%] relative group cursor-help">
-                             <span class="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 hidden group-hover:block bg-stone-800 text-white text-xs px-2 py-1 rounded">อ่านต่อ ${item.pomodoro[2]} น.</span>
-                        </div>`;
+        // 2. Tooltip Config Helper
+        const commonTooltipOptions = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                        return label.join(' ');
                     } else {
-                        // Close rounded if no 3rd block
-                         pomodoroHtml = pomodoroHtml.replace('rounded-l-full', 'rounded-full');
+                        return label;
                     }
-                    pomodoroHtml += `</div>`;
                 }
+            },
+            backgroundColor: 'rgba(26, 83, 92, 0.9)',
+            titleFont: { family: 'Sarabun', size: 14 },
+            bodyFont: { family: 'Sarabun', size: 12 },
+            padding: 12,
+            cornerRadius: 8
+        };
 
-                // Card Content
-                html += `
-                    <div class="flex gap-4 group">
-                        <div class="flex-shrink-0 flex flex-col items-center">
-                            ${iconHtml}
-                        </div>
-                        <div class="flex-grow pb-2">
-                            <div class="bg-white border border-stone-100 rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow duration-300 ${isHighlight ? 'ring-2 ring-red-100' : ''}">
-                                <div class="flex flex-wrap justify-between items-start mb-1">
-                                    <span class="text-sm font-bold text-amber-600 mb-1 md:mb-0"><i class="far fa-clock mr-1"></i> ${item.time}</span>
-                                    ${!isBreak && !isHighlight ? `<span class="category-pill ${colorClass}">${categoryLabels[item.category] || item.category.toUpperCase()}</span>` : ''}
-                                </div>
-                                
-                                <h3 class="text-lg font-bold text-stone-800 leading-tight">${item.subject}</h3>
-                                
-                                ${item.teacher ? `<p class="text-sm text-stone-500 mt-1"><i class="fas fa-chalkboard-user mr-1 text-stone-300"></i> ${item.teacher}</p>` : ''}
-                                
-                                ${item.note ? `<div class="mt-2 text-sm text-stone-600 bg-stone-50 p-2 rounded border-l-2 border-stone-300">${item.note}</div>` : ''}
-                                
-                                ${!isBreak ? pomodoroHtml : ''}
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
+        // --- Chart Initialization ---
 
-            html += `</div>`;
-            container.innerHTML = html;
-        }
-
-        function renderCharts() {
-            // Data Calculation
-            let subjects = { sci: 4, math: 2, lang: 5, soc: 2, gen: 3 }; // Count from schedule
-            let hours = {
-                day1: { study: 5.25, break: 4.75 }, // Approx calculations
-                day2: { study: 5, break: 5 },
-                day3: { study: 4, break: 5 } // Excluding final review open end
-            };
-
-            // Chart 1: Subject Distribution (Doughnut)
-            const ctx1 = document.getElementById('subjectDistributionChart').getContext('2d');
-            new Chart(ctx1, {
+        function initCharts() {
+            // Chart 1: Subject Composition
+            const ctxSubject = document.getElementById('subjectChart').getContext('2d');
+            new Chart(ctxSubject, {
                 type: 'doughnut',
                 data: {
-                    labels: Object.keys(subjects).map(k => categoryLabels[k]),
+                    labels: ['วิทยาศาสตร์ (Bio/Chem/World)', 'ฟิสิกส์ (Physics)', 'คณิตศาสตร์ (Math)', 'ภาษา (Thai/Eng/Chi)', 'สังคม (Social/Hist)', 'ทั่วไป (Gen/Art)'],
                     datasets: [{
-                        data: Object.values(subjects),
-                        backgroundColor: ['#60a5fa', '#818cf8', '#f472b6', '#fbbf24', '#34d399'],
-                        borderWidth: 0
+                        data: [3, 2, 2, 4, 2, 3], // Approximate counts based on schedule
+                        backgroundColor: [
+                            '#4ECDC4', // Sci - Teal
+                            '#1A535C', // Phys - Dark Blue
+                            '#FF6B6B', // Math - Red
+                            '#FFE66D', // Lang - Yellow
+                            '#F9A8D4', // Soc - Pink
+                            '#CBD5E1'  // Gen - Grey
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: { position: 'right', labels: { font: { family: 'Sarabun', size: 10 }, boxWidth: 10 } }
-                    }
+                        legend: { position: 'right', labels: { font: { family: 'Sarabun' } } },
+                        tooltip: commonTooltipOptions
+                    },
+                    cutout: '60%'
                 }
             });
 
-            // Chart 2: Time Management (Bar)
-            const ctx2 = document.getElementById('timeManagementChart').getContext('2d');
-            new Chart(ctx2, {
+            // Chart 2: Workload Balance (Estimated Hours)
+            const ctxBalance = document.getElementById('balanceChart').getContext('2d');
+            new Chart(ctxBalance, {
                 type: 'bar',
                 data: {
                     labels: ['22 ก.พ.', '28 ก.พ.', '1 มี.ค.'],
                     datasets: [
                         {
-                            label: 'เรียน (ชม.)',
-                            data: [5.25, 5, 4],
-                            backgroundColor: '#f59e0b',
-                            borderRadius: 4
+                            label: 'เรียน (ชั่วโมง)',
+                            data: [6.5, 6, 4], // Estimated active study hours
+                            backgroundColor: '#FF6B6B',
+                            borderRadius: 6
                         },
                         {
-                            label: 'พัก (ชม.)',
-                            data: [4.75, 5, 2],
-                            backgroundColor: '#e5e7eb',
-                            borderRadius: 4
+                            label: 'พัก (ชั่วโมง)',
+                            data: [3.5, 4, 2], // Estimated break hours (excluding sleep)
+                            backgroundColor: '#4ECDC4',
+                            borderRadius: 6
                         }
                     ]
                 },
@@ -423,18 +399,86 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
-                        y: { beginAtZero: true, grid: { display: false } },
-                        x: { grid: { display: false } }
+                        x: { stacked: true, grid: { display: false } },
+                        y: { stacked: true, beginAtZero: true }
                     },
                     plugins: {
-                        legend: { position: 'bottom', labels: { font: { family: 'Sarabun' } } }
+                        legend: { position: 'bottom', labels: { font: { family: 'Sarabun' } } },
+                        tooltip: commonTooltipOptions
                     }
                 }
             });
         }
 
-        // Initialize on Load
-        window.addEventListener('DOMContentLoaded', init);
+        // --- Timeline Logic ---
+
+        function switchTab(dayId) {
+            // Update Tab UI
+            ['day1', 'day2', 'day3'].forEach(id => {
+                const btn = document.getElementById('tab-' + id);
+                if (id === dayId) {
+                    btn.classList.add('active-tab');
+                    btn.classList.remove('inactive-tab');
+                } else {
+                    btn.classList.add('inactive-tab');
+                    btn.classList.remove('active-tab');
+                }
+            });
+
+            // Render Timeline
+            renderTimeline(dayId);
+        }
+
+        function renderTimeline(dayId) {
+            const container = document.getElementById('timeline-container');
+            const data = dailySchedule[dayId];
+            
+            let html = '<div class="space-y-6">';
+            
+            data.forEach(item => {
+                const isBreak = item.type === 'break';
+                const isReview = item.type === 'review';
+                
+                // Dynamic Styles based on type
+                let borderColor = isBreak ? '#4ECDC4' : (isReview ? '#1A535C' : '#FF6B6B');
+                let icon = isBreak ? 'fa-mug-hot' : (isReview ? 'fa-star' : 'fa-book');
+                let bgClass = isBreak ? 'bg-teal-50' : (isReview ? 'bg-slate-100' : 'bg-white');
+                let textClass = isBreak ? 'text-teal-700' : 'text-gray-800';
+
+                html += `
+                    <div class="timeline-item ${isBreak ? 'break' : ''}">
+                        <div class="p-4 rounded-lg shadow-sm border border-gray-100 ${bgClass} info-card flex flex-col md:flex-row md:items-center justify-between gap-4">
+                            
+                            <!-- Time & Subject -->
+                            <div class="flex-1">
+                                <span class="inline-block px-2 py-1 text-xs font-bold rounded mb-2 ${isBreak ? 'bg-teal-200 text-teal-800' : 'bg-red-100 text-red-800'}">
+                                    ${item.time}
+                                </span>
+                                <h4 class="text-lg font-bold ${textClass}">
+                                    <i class="fa-solid ${icon} mr-2 opacity-70"></i>${item.subject}
+                                </h4>
+                            </div>
+
+                            <!-- Note & Category -->
+                            <div class="md:text-right">
+                                <span class="block text-sm text-gray-500 font-medium mb-1">${item.category}</span>
+                                <span class="text-sm text-gray-400 italic">${item.note}</span>
+                            </div>
+                            
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        // --- Initialization ---
+        window.addEventListener('DOMContentLoaded', () => {
+            initCharts();
+            switchTab('day1'); // Load Day 1 by default
+        });
 
     </script>
 </body>
