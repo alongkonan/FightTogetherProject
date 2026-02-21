@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Final Exam Infographic - ตารางเตรียมสอบปลายภาค</title>
     
-    <!-- Google Fonts: Sarabun (Thai) & Montserrat (Headings) -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts: Prompt (Thai Body) & Kanit (Headings) -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@500;700&family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -29,13 +29,13 @@
 
     <style>
         body {
-            font-family: 'Sarabun', sans-serif;
+            font-family: 'Prompt', sans-serif;
             background-color: #F7FFF7;
             color: #2D3748;
         }
         
         h1, h2, h3, h4, .kpi-number {
-            font-family: 'Montserrat', sans-serif;
+            font-family: 'Kanit', sans-serif;
         }
 
         /* Chart Container Styling - MANDATORY */
@@ -334,8 +334,8 @@
                 }
             },
             backgroundColor: 'rgba(26, 83, 92, 0.9)',
-            titleFont: { family: 'Sarabun', size: 14 },
-            bodyFont: { family: 'Sarabun', size: 12 },
+            titleFont: { family: 'Prompt', size: 14 },
+            bodyFont: { family: 'Prompt', size: 12 },
             padding: 12,
             cornerRadius: 8
         };
@@ -367,7 +367,7 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: { position: 'right', labels: { font: { family: 'Sarabun' } } },
+                        legend: { position: 'right', labels: { font: { family: 'Prompt' } } },
                         tooltip: commonTooltipOptions
                     },
                     cutout: '60%'
@@ -403,7 +403,7 @@
                         y: { stacked: true, beginAtZero: true }
                     },
                     plugins: {
-                        legend: { position: 'bottom', labels: { font: { family: 'Sarabun' } } },
+                        legend: { position: 'bottom', labels: { font: { family: 'Prompt' } } },
                         tooltip: commonTooltipOptions
                     }
                 }
